@@ -24,6 +24,7 @@ const buttonVariants = cva(
         purple: "bg-gradient-purple text-white shadow-md hover:shadow-lg hover:scale-[1.02]",
         orange: "bg-gradient-orange text-white shadow-md hover:shadow-lg hover:scale-[1.02]",
         glass: "bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20",
+        gradient: "bg-gradient-to-r from-pink-500 via-purple-600 to-cyan-500 hover:from-pink-600 hover:via-purple-700 hover:to-cyan-600 text-white shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105",
       },
       size: {
         default: "h-10 px-4 py-2",

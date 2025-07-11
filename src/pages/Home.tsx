@@ -27,19 +27,28 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 px-6">
+      <section className="relative bg-gradient-to-br from-violet-900/20 via-purple-900/10 to-indigo-900/20 py-20 px-6 overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-cyan-500/10 animate-gradient-x"></div>
+        
+        {/* Floating gradient orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-pink-400/20 to-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
+        
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNlMGU3ZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI0Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50"></div>
         
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border">
-            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+            <Badge variant="outline" className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-700 border-purple-300">
               <Star className="w-3 h-3 mr-1" />
               Trusted by 50+ Schools
             </Badge>
           </div>
           
           <h1 className="text-5xl lg:text-7xl font-bold mb-6">
-            <span className="gradient-text-primary">SS Uniforms</span>
+            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">SS Uniforms</span>
           </h1>
           
           <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
@@ -49,7 +58,7 @@ const Home: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/catalogues">
-              <Button size="xl" variant="business" className="w-full sm:w-auto">
+              <Button size="xl" className="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-purple-600 to-cyan-500 hover:from-pink-600 hover:via-purple-700 hover:to-cyan-600 text-white shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105">
                 <ShoppingBag className="w-5 h-5 mr-2" />
                 Browse Catalogues
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -58,7 +67,7 @@ const Home: React.FC = () => {
             
             {user && hasAdminPermissions(profile) && (
               <Link to="/admin">
-                <Button size="xl" variant="purple" className="w-full sm:w-auto">
+                <Button size="xl" className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-xl transition-all duration-300 hover:scale-105">
                   <Package className="w-5 h-5 mr-2" />
                   Admin Dashboard
                 </Button>
@@ -67,7 +76,7 @@ const Home: React.FC = () => {
             
             {!user && (
               <Link to="/login">
-                <Button size="xl" variant="outline" className="w-full sm:w-auto">
+                <Button size="xl" variant="outline" className="w-full sm:w-auto border-2 border-purple-300 text-purple-700 hover:bg-gradient-to-r hover:from-purple-500 hover:to-indigo-600 hover:text-white transition-all duration-300">
                   Staff Login
                 </Button>
               </Link>

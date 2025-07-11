@@ -62,7 +62,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
+      console.log('👤 AuthContext: Fetching profile for user:', userId);
+      console.log('🔗 AuthContext: Supabase client initialized:', !!supabase);
+      console.log('🏢 AuthContext: Supabase URL:', supabase.supabaseUrl);
       
       const { data, error } = await supabase
         .from('profiles')
@@ -70,27 +72,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', userId)
         .single();
 
-      console.log('Profile fetch result:', { data: !!data, error: error?.message });
+      console.log('📊 AuthContext: Profile fetch result:', { 
+        hasData: !!data, 
+        profileRole: data?.role,
+        profileName: data?.name,
+        error: error?.message,
+        errorCode: error?.code 
+      });
 
       if (error) {
-        console.error('Error fetching profile:', error.message);
+        console.error('❌ AuthContext: Error fetching profile:', error.message);
+        console.error('🔍 AuthContext: Full error details:', error);
         
         // If profile doesn't exist, it might be a new user
         if (error.code === 'PGRST116') {
-          console.log('Profile not found, user might be new');
-          toast({
-            title: "Profile Setup Required",
-            description: "Please contact administrator to set up your profile.",
-            variant: "destructive",
-          });
+          console.log('⚠️ AuthContext: Profile not found, user might be new');
         }
         return;
       }
 
-      console.log('Profile loaded successfully:', data.role);
+      console.log('✅ AuthContext: Profile loaded successfully:', data.role);
       setProfile(data as Profile);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('💥 AuthContext: Error fetching profile:', error);
     } finally {
       setLoading(false);
     }
@@ -100,17 +104,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      console.log('Starting login process for:', email);
+      console.log('🔐 AuthContext: Starting login process for:', email);
+      console.log('📊 AuthContext: Current session state:', !!session);
+      console.log('👤 AuthContext: Current user state:', !!user);
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      console.log('Supabase auth response:', { data: !!data, error: error?.message });
+      console.log('📡 AuthContext: Supabase auth response:', { 
+        hasData: !!data, 
+        hasUser: !!data?.user, 
+        hasSession: !!data?.session,
+        error: error?.message 
+      });
 
       if (error) {
-        console.error('Supabase auth error:', error);
+        console.error('❌ AuthContext: Supabase auth error:', error.message);
+        console.error('🔍 AuthContext: Error details:', error);
         toast({
           title: "Login Failed",
           description: error.message || "Invalid credentials",
@@ -120,7 +132,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data.user) {
-        console.log('User authenticated successfully:', data.user.id);
+        console.log('✅ AuthContext: User authenticated successfully:', data.user.id);
+        console.log('📧 AuthContext: User email:', data.user.email);
+        console.log('🕐 AuthContext: User created at:', data.user.created_at);
         
         // Wait a moment for the profile to be created/fetched
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -132,10 +146,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
 
-      console.log('No user data returned from Supabase');
+      console.log('⚠️ AuthContext: No user data returned from Supabase');
       return false;
     } catch (error) {
-      console.error('Login catch block error:', error);
+      console.error('💥 AuthContext: Login catch block error:', error);
       toast({
         title: "Login Error",
         description: "An unexpected error occurred.",
