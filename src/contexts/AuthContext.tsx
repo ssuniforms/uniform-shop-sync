@@ -62,17 +62,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
+      console.log('Profile fetch result:', { data: !!data, error: error?.message });
+
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error fetching profile:', error.message);
+        
+        // If profile doesn't exist, it might be a new user
+        if (error.code === 'PGRST116') {
+          console.log('Profile not found, user might be new');
+          toast({
+            title: "Profile Setup Required",
+            description: "Please contact administrator to set up your profile.",
+            variant: "destructive",
+          });
+        }
         return;
       }
 
+      console.log('Profile loaded successfully:', data.role);
       setProfile(data as Profile);
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -84,21 +99,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
+      
+      console.log('Starting login process for:', email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log('Supabase auth response:', { data: !!data, error: error?.message });
+
       if (error) {
+        console.error('Supabase auth error:', error);
         toast({
           title: "Login Failed",
-          description: error.message,
+          description: error.message || "Invalid credentials",
           variant: "destructive",
         });
         return false;
       }
 
       if (data.user) {
+        console.log('User authenticated successfully:', data.user.id);
+        
+        // Wait a moment for the profile to be created/fetched
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         toast({
           title: "Welcome back!",
           description: "Successfully logged in.",
@@ -106,8 +132,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return true;
       }
 
+      console.log('No user data returned from Supabase');
       return false;
     } catch (error) {
+      console.error('Login catch block error:', error);
       toast({
         title: "Login Error",
         description: "An unexpected error occurred.",
