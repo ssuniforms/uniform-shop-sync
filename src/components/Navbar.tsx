@@ -17,7 +17,7 @@ import {
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, profile, logout } = useAuth();
+  const { user, profile, logout, loading } = useAuth();
   const { totalItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();

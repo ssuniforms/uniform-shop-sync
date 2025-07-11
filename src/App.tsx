@@ -15,6 +15,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Pages
 import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import AdminSetup from "@/pages/AdminSetup";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +35,9 @@ const App = () => (
               <Layout>
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/admin-setup" element={<AdminSetup />} />
                   
                   {/* Admin Routes */}
                   <Route 
@@ -45,8 +51,6 @@ const App = () => (
                   
                   {/* Placeholder routes for future implementation */}
                   <Route path="/catalogues" element={<div className="p-8 text-center">Catalogues page coming soon!</div>} />
-                  <Route path="/login" element={<div className="p-8 text-center">Login page coming soon!</div>} />
-                  <Route path="/signup" element={<div className="p-8 text-center">Signup page coming soon!</div>} />
                   <Route path="/cart" element={<div className="p-8 text-center">Cart page coming soon!</div>} />
                   
                   {/* Catch-all route */}

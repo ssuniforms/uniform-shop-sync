@@ -2,6 +2,30 @@
 
 export type UserRole = 'admin' | 'staff';
 
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          name: string;
+          role: UserRole;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          role?: UserRole;
+        };
+        Update: {
+          name?: string;
+          role?: UserRole;
+        };
+      };
+    };
+  };
+}
+
 export interface User {
   id: string;
   email: string;

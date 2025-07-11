@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Catalogue, 
   UniformItem, 
@@ -53,6 +54,7 @@ export const useData = () => {
 };
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
   const [catalogues, setCatalogues] = useState<Catalogue[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
@@ -392,13 +394,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateStock = async (itemId: string, quantity: number): Promise<boolean> => {
     try {
-      const { error } = await supabase
-        .rpc('update_item_stock', {
-          item_id: itemId,
-          quantity_sold: quantity,
-        });
+      // For now, we'll manually update the item stock
+      // In a real implementation, you'd create an RPC function
+      const { data: item } = await supabase
+        .from('items')
+        .select('stock')
+        .eq('id', itemId)
+        .single();
 
-      if (error) throw error;
+      if (item) {
+        const newStock = Math.max(0, item.stock - quantity);
+        const { error } = await supabase
+          .from('items')
+          .update({ stock: newStock })
+          .eq('id', itemId);
+        
+        if (error) throw error;
+      }
 
       await fetchCatalogues();
       return true;
@@ -409,20 +421,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addSale = async (sale: SaleInput): Promise<string | null> => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     try {
       const totalAmount = sale.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       
       const saleData = {
-        customer_name: sale.customer_name,
-        customer_phone: sale.customer_phone,
+        employee_id: user.id,
+        customer_name: sale.customer_name || null,
+        customer_phone: sale.customer_phone || null,
         total_amount: totalAmount,
-        items: JSON.stringify(sale.items.map(item => ({
+        items: sale.items.map(item => ({
           id: item.id,
           name: item.item.name,
           size: item.size,
           price: item.price,
           quantity: item.quantity,
-        }))),
+        })),
       };
 
       const { data, error } = await supabase
