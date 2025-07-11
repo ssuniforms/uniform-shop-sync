@@ -14,7 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      catalogues: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          name: string
+          order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name: string
+          order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name?: string
+          order?: number
+        }
+        Relationships: []
+      }
+      item_sizes: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          price: number
+          size: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          price: number
+          size: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          price?: number
+          size?: string
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          catalogue_id: string
+          created_at: string
+          id: string
+          image: string | null
+          location: string | null
+          material: string | null
+          name: string
+          price: number
+          section_type: string
+          stock: number
+        }
+        Insert: {
+          catalogue_id: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          location?: string | null
+          material?: string | null
+          name: string
+          price?: number
+          section_type: string
+          stock?: number
+        }
+        Update: {
+          catalogue_id?: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          location?: string | null
+          material?: string | null
+          name?: string
+          price?: number
+          section_type?: string
+          stock?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_catalogue_id_fkey"
+            columns: ["catalogue_id"]
+            isOneToOne: false
+            referencedRelation: "catalogues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name: string
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          created_at: string
+          customer_name: string | null
+          customer_phone: string | null
+          employee_id: string
+          id: string
+          items: Json
+          total_amount: number
+        }
+        Insert: {
+          created_at?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          employee_id: string
+          id?: string
+          items: Json
+          total_amount: number
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          employee_id?: string
+          id?: string
+          items?: Json
+          total_amount?: number
+        }
+        Relationships: []
+      }
+      shop_info: {
+        Row: {
+          address: string
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          images: Json | null
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          images?: Json | null
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          images?: Json | null
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
