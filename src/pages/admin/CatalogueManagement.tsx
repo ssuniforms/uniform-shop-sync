@@ -24,6 +24,9 @@ const CatalogueManagement = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('Creating catalogue with data:', formData);
+    
     const id = await addCatalogue(formData);
     if (id) {
       toast({
@@ -32,7 +35,9 @@ const CatalogueManagement = () => {
       });
       setIsCreateOpen(false);
       setFormData({ name: '', description: '', image: '' });
+      console.log('Catalogue created successfully, ID:', id);
     } else {
+      console.error('Failed to create catalogue');
       toast({
         title: "Error",
         description: "Failed to create catalogue",

@@ -53,6 +53,29 @@ const ItemManagement = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form data
+    if (!formData.catalogue_id) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a catalogue",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!formData.name.trim()) {
+      toast({
+        title: "Validation Error", 
+        description: "Please enter an item name",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    console.log('Creating item with data:', formData);
+    console.log('Size prices:', sizePrices);
+    
     const itemData = { ...formData, sizes: sizePrices };
     const id = await addItem(itemData);
     if (id) {

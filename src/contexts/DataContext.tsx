@@ -219,15 +219,26 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addCatalogue = async (catalogue: CatalogueInput): Promise<string | null> => {
     try {
+      console.log('Adding catalogue:', catalogue);
+      
       const { data, error } = await supabase
         .from('catalogues')
-        .insert(catalogue)
+        .insert({
+          name: catalogue.name,
+          description: catalogue.description || '',
+          image: catalogue.image || '',
+          order: catalogue.order || 1
+        })
         .select()
         .single();
 
       if (error) throw error;
+      
+      console.log('Catalogue created in DB:', data);
 
       await fetchCatalogues();
+      console.log('Catalogues refetched after creation');
+      
       toast({
         title: "Success",
         description: "Catalogue added successfully",
@@ -236,9 +247,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return data.id;
     } catch (error) {
       console.error('Error adding catalogue:', error);
+      console.error('Catalogue data that failed:', catalogue);
       toast({
         title: "Error",
-        description: "Failed to add catalogue",
+        description: `Failed to add catalogue: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
       return null;
@@ -299,6 +311,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addItem = async (item: ItemInput): Promise<string | null> => {
     try {
+      console.log('Adding item:', item);
+      
+      // Validate required fields
+      if (!item.catalogue_id || !item.name || !item.section_type) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields",
+          variant: "destructive",
+        });
+        return null;
+      }
+
       // Add item
       const { data: itemData, error: itemError } = await supabase
         .from('items')
@@ -316,6 +340,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (itemError) throw itemError;
+      
+      console.log('Item created:', itemData);
 
       // Add sizes
       if (item.sizes.length > 0) {
@@ -333,6 +359,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       await fetchCatalogues();
+      console.log('Catalogues refetched after item creation');
+      
       toast({
         title: "Success",
         description: "Item added successfully",
@@ -341,9 +369,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return itemData.id;
     } catch (error) {
       console.error('Error adding item:', error);
+      console.error('Item data that failed:', item);
       toast({
         title: "Error",
-        description: "Failed to add item",
+        description: `Failed to add item: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
       return null;
