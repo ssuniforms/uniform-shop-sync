@@ -80,6 +80,46 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     fetchCatalogues();
     fetchSales();
+    
+    // Set up real-time subscriptions for catalogues and items
+    const catalogueSubscription = supabase
+      .channel('catalogues-changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'catalogues' },
+        () => {
+          console.log('Catalogue changed, refetching...');
+          fetchCatalogues();
+        }
+      )
+      .subscribe();
+
+    const itemsSubscription = supabase
+      .channel('items-changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'items' },
+        () => {
+          console.log('Items changed, refetching...');
+          fetchCatalogues();
+        }
+      )
+      .subscribe();
+
+    const itemSizesSubscription = supabase
+      .channel('item-sizes-changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'item_sizes' },
+        () => {
+          console.log('Item sizes changed, refetching...');
+          fetchCatalogues();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      catalogueSubscription.unsubscribe();
+      itemsSubscription.unsubscribe();
+      itemSizesSubscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

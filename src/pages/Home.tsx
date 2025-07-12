@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth, hasAdminPermissions } from '@/contexts/AuthContext';
+import { useShop } from '@/contexts/ShopContext';
+import { useData } from '@/contexts/DataContext';
 import {
   Package,
   ShoppingBag,
@@ -23,6 +25,14 @@ import {
 
 const Home: React.FC = () => {
   const { user, profile } = useAuth();
+  const { shopInfo, loading: shopLoading } = useShop();
+  const { catalogues, loading: cataloguesLoading } = useData();
+
+  // Calculate stats from real data
+  const totalSchools = catalogues.length;
+  const totalItems = catalogues.reduce((sum, catalogue) => 
+    sum + catalogue.sections.reduce((sectionSum, section) => 
+      sectionSum + section.items.length, 0), 0);
 
   return (
     <div className="min-h-screen">
@@ -43,17 +53,18 @@ const Home: React.FC = () => {
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border">
             <Badge variant="outline" className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-purple-700 border-purple-300">
               <Star className="w-3 h-3 mr-1" />
-              Trusted by 50+ Schools
+              Trusted by {totalSchools > 0 ? `${totalSchools}+` : '50+'} Schools
             </Badge>
           </div>
           
           <h1 className="text-5xl lg:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">SS Uniforms</span>
+            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              {shopInfo?.name || 'SS Uniforms'}
+            </span>
           </h1>
           
           <p className="text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Delhi NCR's premier school uniform provider. Quality uniforms, 
-            competitive prices, and exceptional service for educational institutions.
+            {shopInfo?.description || 'Delhi NCR\'s premier school uniform provider. Quality uniforms, competitive prices, and exceptional service for educational institutions.'}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -115,7 +126,7 @@ const Home: React.FC = () => {
                 <div className="w-16 h-16 bg-gradient-green rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <Globe className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-green-800 mb-3">50+ Schools</h3>
+                <h3 className="text-xl font-bold text-green-800 mb-3">{totalSchools > 0 ? `${totalSchools}+` : '50+'} Schools</h3>
                 <p className="text-green-600">
                   Trusted partner for schools across Delhi NCR region
                 </p>
@@ -249,11 +260,14 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-3">Visit Our Store</h3>
                 <p className="text-muted-foreground mb-4">
-                  SS Uniforms<br />
-                  Main Market, Delhi NCR<br />
-                  Near Metro Station
+                  {shopInfo?.name || 'SS Uniforms'}<br />
+                  {shopInfo?.address || 'Main Market, Delhi NCR'}<br />
                 </p>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.open(`https://maps.google.com/?q=${shopInfo?.location.lat || 28.560651},${shopInfo?.location.lng || 77.002637}`, '_blank')}
+                >
                   Get Directions
                 </Button>
               </CardContent>
@@ -266,11 +280,15 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-3">Call Us</h3>
                 <p className="text-muted-foreground mb-4">
-                  +91 98765 43210<br />
-                  +91 87654 32109<br />
-                  Mon - Sat: 9 AM - 8 PM
+                  {shopInfo?.phone || '+91 98765 43210'}<br />
+                  {shopInfo?.businessHours?.weekdays || 'Mon - Sat: 9 AM - 7 PM'}<br />
+                  {shopInfo?.businessHours?.weekends || 'Sun: 10 AM - 4 PM'}
                 </p>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.open(`tel:${shopInfo?.phone || '+91-9876543210'}`, '_self')}
+                >
                   Call Now
                 </Button>
               </CardContent>
@@ -283,11 +301,14 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-3">Email Us</h3>
                 <p className="text-muted-foreground mb-4">
-                  info@ssuniforms.com<br />
-                  orders@ssuniforms.com<br />
+                  {shopInfo?.email || 'info@ssuniforms.com'}<br />
                   Quick response guaranteed
                 </p>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.open(`mailto:${shopInfo?.email || 'info@ssuniforms.com'}`, '_self')}
+                >
                   Send Email
                 </Button>
               </CardContent>
@@ -313,7 +334,10 @@ const Home: React.FC = () => {
               </Button>
             </Link>
             <Button size="xl" variant="outline" className="w-full sm:w-auto bg-white text-primary hover:bg-white/90">
-              <Phone className="w-5 h-5 mr-2" />
+              <Phone 
+                className="w-5 h-5 mr-2" 
+                onClick={() => window.open(`tel:${shopInfo?.phone || '+91-9876543210'}`, '_self')}
+              />
               Contact Us
             </Button>
           </div>

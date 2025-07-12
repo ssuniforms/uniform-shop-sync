@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { ShopProvider } from "@/contexts/ShopContext";
 
 // Components
 import Layout from "@/components/Layout";
@@ -23,6 +24,7 @@ import CatalogueManagement from "@/pages/admin/CatalogueManagement";
 import ItemManagement from "@/pages/admin/ItemManagement";
 import EmployeeManagement from "@/pages/admin/EmployeeManagement";
 import SalesManagement from "@/pages/admin/SalesManagement";
+import Catalogues from "@/pages/Catalogues";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,67 +36,69 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <DataProvider>
-            <CartProvider>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/admin-setup" element={<AdminSetup />} />
-                  
-                  {/* Admin Routes */}
-                  <Route 
-                    path="/admin" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/catalogues" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <CatalogueManagement />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/items" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <ItemManagement />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/employees" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <EmployeeManagement />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/sales" 
-                    element={
-                      <ProtectedRoute requiredRole="admin">
-                        <SalesManagement />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Public routes for future implementation */}
-                  <Route path="/catalogues" element={<div className="p-8 text-center">Public catalogues page coming soon!</div>} />
-                  <Route path="/cart" element={<div className="p-8 text-center">Cart page coming soon!</div>} />
-                  
-                  {/* Catch-all route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Layout>
-            </CartProvider>
-          </DataProvider>
+          <ShopProvider>
+            <DataProvider>
+              <CartProvider>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/admin-setup" element={<AdminSetup />} />
+                    
+                    {/* Admin Routes */}
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <Dashboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/catalogues" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <CatalogueManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/items" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <ItemManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/employees" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <EmployeeManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/sales" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <SalesManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* Public routes for future implementation */}
+                    <Route path="/catalogues" element={<Catalogues />} />
+                    <Route path="/cart" element={<div className="p-8 text-center">Cart page coming soon!</div>} />
+                    
+                    {/* Catch-all route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              </CartProvider>
+            </DataProvider>
+          </ShopProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
