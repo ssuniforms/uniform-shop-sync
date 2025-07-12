@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,7 @@ import {
   DollarSign,
   Box,
   Layers,
+  ArrowRight,
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -31,6 +32,11 @@ const Dashboard: React.FC = () => {
     catalogues, 
     loading 
   } = useData();
+  const navigate = useNavigate();
+
+  const handleSalesCardClick = (period: string) => {
+    navigate(`/admin/sales?filter=${period}`);
+  };
 
   if (loading) {
     return (
@@ -71,88 +77,96 @@ const Dashboard: React.FC = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link to="/admin/catalogues">
-            <Card className="card-blue hover:shadow-business-hover transition-all duration-300 cursor-pointer group">
+            <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-blue-700">Manage Catalogues</p>
-                    <p className="text-xs text-blue-600 mt-1">School Collections</p>
+                    <p className="text-3xl font-bold text-blue-800 mt-2">
+                      {catalogues.length}
+                    </p>
                   </div>
-                  <Package className="w-8 h-8 text-blue-600 group-hover:scale-110 transition-transform" />
+                  <Box className="w-8 h-8 text-blue-600 group-hover:scale-110 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link to="/admin/items">
-            <Card className="card-green hover:shadow-business-hover transition-all duration-300 cursor-pointer group">
+            <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-green-50 to-green-100 border-green-200 cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-green-700">Manage Items</p>
-                    <p className="text-xs text-green-600 mt-1">Inventory Control</p>
+                    <p className="text-3xl font-bold text-green-800 mt-2">
+                      {dashboardStats.totalItems}
+                    </p>
                   </div>
-                  <Plus className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform" />
+                  <Package className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link to="/admin/employees">
-            <Card className="card-purple hover:shadow-business-hover transition-all duration-300 cursor-pointer group">
+            <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-purple-700">Manage Staff</p>
-                    <p className="text-xs text-purple-600 mt-1">Employee Accounts</p>
+                    <p className="text-sm font-medium text-indigo-700">Manage Staff</p>
+                    <p className="text-3xl font-bold text-indigo-800 mt-2">
+                      <Users className="w-8 h-8 text-indigo-600 group-hover:scale-110 transition-transform" />
+                    </p>
                   </div>
-                  <Users className="w-8 h-8 text-purple-600 group-hover:scale-110 transition-transform" />
+                  <Users className="w-8 h-8 text-indigo-600 group-hover:scale-110 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link to="/admin/sales">
-            <Card className="card-orange hover:shadow-business-hover transition-all duration-300 cursor-pointer group">
+            <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-rose-50 to-rose-100 border-rose-200 cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-orange-700">View Sales</p>
-                    <p className="text-xs text-orange-600 mt-1">Transaction History</p>
+                    <p className="text-sm font-medium text-rose-700">View Sales</p>
+                    <p className="text-3xl font-bold text-rose-800 mt-2">
+                      {dashboardStats.salesCount}
+                    </p>
                   </div>
-                  <ShoppingCart className="w-8 h-8 text-orange-600 group-hover:scale-110 transition-transform" />
+                  <ShoppingCart className="w-8 h-8 text-rose-600 group-hover:scale-110 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           </Link>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-700">Total Stock Value</p>
-                  <p className="text-3xl font-bold text-blue-800 mt-2">
-                    {formatPrice(dashboardStats.totalStockValue)}
+                  <p className="text-sm font-medium text-yellow-700">Total Revenue</p>
+                  <p className="text-3xl font-bold text-yellow-800 mt-2">
+                    {formatPrice(dashboardStats.revenue)}
                   </p>
                 </div>
-                <DollarSign className="w-8 h-8 text-blue-600" />
+                <DollarSign className="w-8 h-8 text-yellow-600" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-700">Total Items</p>
-                  <p className="text-3xl font-bold text-green-800 mt-2">
-                    {dashboardStats.totalItems.toLocaleString()}
+                  <p className="text-sm font-medium text-red-700">Low Stock Items</p>
+                  <p className="text-3xl font-bold text-red-800 mt-2">
+                    {dashboardStats.lowStockCount}
                   </p>
                 </div>
-                <Box className="w-8 h-8 text-green-600" />
+                <AlertTriangle className="w-8 h-8 text-red-600" />
               </div>
             </CardContent>
           </Card>
@@ -188,11 +202,17 @@ const Dashboard: React.FC = () => {
 
         {/* Sales Analytics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="shadow-business bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+          <Card 
+            className="shadow-business bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+            onClick={() => handleSalesCardClick('today')}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg text-emerald-800 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                Today's Sales
+              <CardTitle className="text-lg text-emerald-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Today's Sales
+                </div>
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -205,11 +225,17 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-business bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200">
+          <Card 
+            className="shadow-business bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+            onClick={() => handleSalesCardClick('month')}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg text-cyan-800 flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                This Month
+              <CardTitle className="text-lg text-cyan-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  This Month
+                </div>
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -222,11 +248,17 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-business bg-gradient-to-br from-violet-50 to-violet-100 border-violet-200">
+          <Card 
+            className="shadow-business bg-gradient-to-br from-violet-50 to-violet-100 border-violet-200 cursor-pointer hover:shadow-lg transition-all duration-300 group"
+            onClick={() => handleSalesCardClick('year')}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg text-violet-800 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                This Year
+              <CardTitle className="text-lg text-violet-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  This Year
+                </div>
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>

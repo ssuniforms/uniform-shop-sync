@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image, Plus, Minus } from 'lucide-react';
+import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image, Plus, Minus, Sparkles } from 'lucide-react';
 import { formatPrice } from '@/utils/formatters';
 import { SectionType, Catalogue } from '@/types';
 
 const Catalogues = () => {
   const { catalogues, loading } = useData();
-  const { addItem, isInCart, getItemQuantity } = useCart();
+  const { addItem } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCatalogue, setSelectedCatalogue] = useState<Catalogue | null>(null);
   const [selectedSection, setSelectedSection] = useState<string>('all');
@@ -64,8 +64,6 @@ const Catalogues = () => {
       ...prev,
       [itemId]: size
     }));
-    
-    // Initialize quantity to 1 when size is selected
     if (!quantities[itemId]) {
       setQuantities(prev => ({
         ...prev,
@@ -87,21 +85,13 @@ const Catalogues = () => {
     const itemId = item.id;
     const selectedSize = selectedSizes[itemId];
     const quantity = quantities[itemId] || 1;
-
-    // If item has sizes, require size selection
     if (item.sizes && item.sizes.length > 0) {
-      if (!selectedSize) {
-        // Show error or prompt to select size
-        return;
-      }
-      
-      // Find the selected size object
+      if (!selectedSize) return;
       const sizeObj = item.sizes.find((s: any) => s.size === selectedSize);
       if (sizeObj) {
         addItem(item, selectedSize, sizeObj.price, quantity);
       }
     } else {
-      // Item has single price
       addItem(item, 'Standard', item.price, quantity);
     }
   };
@@ -116,7 +106,7 @@ const Catalogues = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/30 to-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading catalogues...</p>
@@ -126,51 +116,32 @@ const Catalogues = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold gradient-text-primary mb-4">
-            {selectedCatalogue ? selectedCatalogue.name : 'School Uniform Catalogues'}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {selectedCatalogue 
-              ? `Browse ${selectedCatalogue.name} uniforms and accessories`
-              : 'Browse our extensive collection of quality school uniforms for various institutions'
-            }
-          </p>
-        </div>
-
-        {/* Back Button */}
-        {selectedCatalogue && (
-          <div className="flex justify-start">
-            <Button
-              variant="outline"
-              onClick={handleBackToCatalogues}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Catalogues
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background pb-12">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-br from-blue-100 via-white to-blue-50 py-12 mb-8 shadow-sm rounded-b-3xl">
+        <div className="max-w-5xl mx-auto flex flex-col items-center gap-4 px-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Sparkles className="h-8 w-8 text-blue-500 animate-bounce" />
+            <h1 className="text-4xl md:text-5xl font-extrabold gradient-text-primary text-center">
+              School Uniform Catalogues
+            </h1>
           </div>
-        )}
-
-        {/* Search and Filters */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="flex gap-4 items-center flex-wrap">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <p className="text-lg md:text-xl text-muted-foreground text-center max-w-2xl">
+            Discover quality school uniforms for every institution. Browse, filter, and shop with ease!
+          </p>
+          <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-center mt-4">
+            <div className="relative w-full md:w-96">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 placeholder={selectedCatalogue ? "Search items..." : "Search catalogues..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-80"
+                className="pl-10 w-full shadow-md"
               />
             </div>
-            
             {selectedCatalogue && (
               <Select value={selectedSection} onValueChange={setSelectedSection}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-40 shadow-md">
                   <SelectValue placeholder="All Sections" />
                 </SelectTrigger>
                 <SelectContent>
@@ -183,70 +154,48 @@ const Catalogues = () => {
               </Select>
             )}
           </div>
-
-          {selectedCatalogue && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-              >
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
         </div>
+      </div>
 
-        {/* Results Summary */}
+      <div className="max-w-7xl mx-auto space-y-10 px-4">
+        {/* Back Button */}
         {selectedCatalogue && (
-          <div className="flex items-center justify-between">
-            <p className="text-muted-foreground">
-              Showing {filteredItems.length} of {catalogueItems.length} items
-            </p>
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                {catalogueItems.length} total items
-              </span>
-            </div>
+          <div className="flex justify-start mb-4">
+            <Button
+              variant="outline"
+              onClick={handleBackToCatalogues}
+              className="flex items-center gap-2 shadow-sm"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Catalogues
+            </Button>
           </div>
         )}
 
         {/* Show Catalogues or Items */}
         {!selectedCatalogue ? (
-          // Show Catalogues
           <div>
             {filteredCatalogues.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No catalogues found</h3>
-                    <p className="text-muted-foreground">
-                      Try adjusting your search criteria
-                    </p>
-                  </div>
+              <Card className="mt-12">
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <Package className="h-16 w-16 text-muted-foreground mb-4" />
+                  <h3 className="text-2xl font-semibold mb-2">No catalogues found</h3>
+                  <p className="text-muted-foreground text-lg">
+                    Try adjusting your search criteria
+                  </p>
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
                 {filteredCatalogues.map((catalogue) => {
                   const totalItems = catalogue.sections.reduce((sum, section) => sum + section.items.length, 0);
                   const totalStock = catalogue.sections.reduce((sum, section) => 
                     sum + section.items.reduce((itemSum, item) => itemSum + item.stock, 0), 0
                   );
-                  
                   return (
                     <Card 
                       key={catalogue.id} 
-                      className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                      className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-blue-400 bg-white/90 rounded-2xl"
                       onClick={() => handleCatalogueClick(catalogue)}
                     >
                       <div className="aspect-video bg-muted relative overflow-hidden">
@@ -256,7 +205,6 @@ const Catalogues = () => {
                             alt={catalogue.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
-                              // Fallback to placeholder if image fails to load
                               const target = e.target as HTMLImageElement;
                               target.style.display = 'none';
                               target.nextElementSibling?.classList.remove('hidden');
@@ -266,31 +214,28 @@ const Catalogues = () => {
                         <div className={`flex items-center justify-center h-full ${catalogue.image ? 'hidden' : ''}`}>
                           <Image className="h-12 w-12 text-muted-foreground" />
                         </div>
+                        <div className="absolute top-2 left-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold shadow">
+                          {totalItems} items
+                        </div>
                       </div>
-                      
                       <CardHeader>
-                        <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors font-bold">
                           {catalogue.name}
                         </CardTitle>
-                        <CardDescription className="line-clamp-2">
+                        <CardDescription className="line-clamp-2 text-base">
                           {catalogue.description}
                         </CardDescription>
                       </CardHeader>
-                      
                       <CardContent>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground mt-2">
                           <div className="flex items-center gap-1">
                             <Package className="h-4 w-4" />
-                            {totalItems} items
-                          </div>
-                          <div>
                             {totalStock} in stock
                           </div>
+                          <Button className="rounded-full px-4 py-1 text-sm font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 shadow-sm mt-2">
+                            View Items
+                          </Button>
                         </div>
-                        
-                        <Button className="w-full mt-4" variant="outline">
-                          View Items
-                        </Button>
                       </CardContent>
                     </Card>
                   );
@@ -299,24 +244,21 @@ const Catalogues = () => {
             )}
           </div>
         ) : (
-          // Show Items from Selected Catalogue
           <div>
             {filteredItems.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No items found</h3>
-                    <p className="text-muted-foreground">
-                      Try adjusting your search or filter criteria
-                    </p>
-                  </div>
+              <Card className="mt-12">
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <Package className="h-16 w-16 text-muted-foreground mb-4" />
+                  <h3 className="text-2xl font-semibold mb-2">No items found</h3>
+                  <p className="text-muted-foreground text-lg">
+                    Try adjusting your search or filter criteria
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               <div className={
                 viewMode === 'grid' 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
                   : "space-y-4"
               }>
                 {filteredItems.map((item) => {
@@ -325,11 +267,10 @@ const Catalogues = () => {
                   const quantity = quantities[itemId] || 1;
                   const currentPrice = getItemPrice(item, selectedSize);
                   const hasSizes = item.sizes && item.sizes.length > 0;
-                  
                   return (
-                    <Card key={item.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 ${
+                    <Card key={item.id} className={`overflow-hidden hover:shadow-xl transition-all duration-300 ${
                       viewMode === 'list' ? 'flex flex-row' : ''
-                    }`}>
+                    } border-2 border-transparent hover:border-blue-400 bg-white/90 rounded-2xl`}>
                       <div className={`bg-muted relative ${
                         viewMode === 'list' ? 'w-48 h-32' : 'aspect-square'
                       }`}>
@@ -339,7 +280,6 @@ const Catalogues = () => {
                             alt={item.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              // Fallback to placeholder if image fails to load
                               const target = e.target as HTMLImageElement;
                               target.style.display = 'none';
                               target.nextElementSibling?.classList.remove('hidden');
@@ -354,18 +294,19 @@ const Catalogues = () => {
                             Low Stock
                           </Badge>
                         )}
+                        <div className="absolute bottom-2 left-2 bg-white/80 text-blue-700 px-2 py-1 rounded text-xs font-semibold shadow">
+                          {item.sectionName}
+                        </div>
                       </div>
-                      
-                      <div className="flex-1">
+                      <div className="flex-1 flex flex-col justify-between">
                         <CardHeader className={viewMode === 'list' ? 'pb-2' : ''}>
-                          <CardTitle className="text-lg">{item.name}</CardTitle>
-                          <CardDescription>
-                            {item.sectionName}
+                          <CardTitle className="text-lg font-bold text-blue-900">{item.name}</CardTitle>
+                          <CardDescription className="text-base text-muted-foreground">
+                            {item.material && <span>Material: {item.material}</span>}
                           </CardDescription>
                         </CardHeader>
-                        
                         <CardContent className="space-y-3">
-                          <div className="flex justify-between items-center">
+                          <div className="flex justify-between items-center mb-2">
                             <span className="text-2xl font-bold text-primary">
                               {formatPrice(currentPrice)}
                             </span>
@@ -373,13 +314,6 @@ const Catalogues = () => {
                               {item.stock} in stock
                             </Badge>
                           </div>
-                          
-                          {item.material && (
-                            <p className="text-sm text-muted-foreground">
-                              Material: {item.material}
-                            </p>
-                          )}
-                          
                           {hasSizes && (
                             <div className="space-y-2">
                               <p className="text-sm font-medium">Select Size:</p>
@@ -401,8 +335,6 @@ const Catalogues = () => {
                               </div>
                             </div>
                           )}
-                          
-                          {/* Quantity Selector */}
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">Quantity:</span>
                             <div className="flex items-center gap-2">
@@ -431,9 +363,8 @@ const Catalogues = () => {
                               </Button>
                             </div>
                           </div>
-                          
                           <Button 
-                            className="w-full" 
+                            className="w-full mt-2 font-semibold rounded-full shadow-md"
                             disabled={item.stock === 0 || (hasSizes && !selectedSize)}
                             onClick={(e) => {
                               e.stopPropagation();

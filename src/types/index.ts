@@ -188,8 +188,8 @@ export interface ItemInput {
   name: string;
   material: string;
   location: string;
-  stock: number;
-  price: number;
+  stock: number | '';
+  price: number | '';
   image: string;
   section_type: SectionType;
   sizes: SizePriceInput[];
@@ -197,7 +197,7 @@ export interface ItemInput {
 
 export interface SizePriceInput {
   size: string;
-  price: number;
+  price: number | '';
 }
 
 export interface SaleInput {

@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Edit, Trash2, Image, Package } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Package, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CatalogueInput } from '@/types';
 
@@ -117,50 +117,69 @@ const CatalogueManagement = () => {
               Add Catalogue
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Catalogue</DialogTitle>
-              <DialogDescription>
-                Add a new school or organization catalogue
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <Label htmlFor="name">School/Organization Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Greenwood High School"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Brief description of the uniform collection"
-                  rows={3}
-                />
-              </div>
-              <div>
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://example.com/catalogue-image.jpg"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">Create Catalogue</Button>
-              </div>
-            </form>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-xl p-0">
+            <div className="p-6">
+              <DialogHeader className="mb-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-6 w-6 text-blue-500" />
+                  <DialogTitle className="text-2xl font-bold">Create New Catalogue</DialogTitle>
+                </div>
+                <DialogDescription className="text-muted-foreground mb-2">
+                  Add a new school or organization catalogue. Fill in the details below.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleCreate} className="space-y-5">
+                <div>
+                  <Label htmlFor="name">School/Organization Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g., Greenwood High School"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">This will be visible to users.</p>
+                </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Brief description of the uniform collection"
+                    rows={3}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Describe the catalogue for easy identification.</p>
+                </div>
+                <div>
+                  <Label htmlFor="image">Image URL</Label>
+                  <Input
+                    id="image"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://example.com/catalogue-image.jpg"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Paste a direct image URL for a nice preview.</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    {formData.image ? (
+                      <img src={formData.image} alt="Preview" className="w-20 h-14 object-cover rounded border" />
+                    ) : (
+                      <div className="w-20 h-14 flex items-center justify-center bg-muted rounded border">
+                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <span className="text-xs text-muted-foreground">Preview</span>
+                  </div>
+                </div>
+                <hr className="my-4 border-muted" />
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Create Catalogue</Button>
+                </div>
+              </form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

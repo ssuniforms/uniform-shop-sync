@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Image, Package, AlertTriangle } from 'lucide-react';
+import { Plus, Edit, Trash2, Image, Package, AlertTriangle, Sparkles, Image as ImageIcon, Ruler } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ItemInput, SectionType, SizePriceInput } from '@/types';
 
@@ -203,165 +203,196 @@ const ItemManagement = () => {
               Add Item
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Create New Item</DialogTitle>
-              <DialogDescription>
-                Add a new uniform item to the inventory
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="catalogue">Catalogue</Label>
-                  <Select 
-                    value={formData.catalogue_id} 
-                    onValueChange={(value) => setFormData({ ...formData, catalogue_id: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select catalogue" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {catalogues.map(catalogue => (
-                        <SelectItem key={catalogue.id} value={catalogue.id}>
-                          {catalogue.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl p-0">
+            <div className="p-6">
+              <DialogHeader className="mb-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-6 w-6 text-green-500" />
+                  <DialogTitle className="text-2xl font-bold">Create New Item</DialogTitle>
+                </div>
+                <DialogDescription className="text-muted-foreground mb-2">
+                  Add a new uniform item to the inventory. Fill in the details below.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleCreate} className="space-y-5">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="catalogue">Catalogue</Label>
+                    <Select 
+                      value={formData.catalogue_id} 
+                      onValueChange={(value) => setFormData({ ...formData, catalogue_id: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select catalogue" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {catalogues.map(catalogue => (
+                          <SelectItem key={catalogue.id} value={catalogue.id}>
+                            {catalogue.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">Choose the catalogue this item belongs to.</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="section_type">Section Type</Label>
+                    <Select 
+                      value={formData.section_type} 
+                      onValueChange={(value: SectionType) => setFormData({ ...formData, section_type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="summer">Summer</SelectItem>
+                        <SelectItem value="winter">Winter</SelectItem>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">Select the section for this item.</p>
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="section_type">Section Type</Label>
-                  <Select 
-                    value={formData.section_type} 
-                    onValueChange={(value: SectionType) => setFormData({ ...formData, section_type: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="summer">Summer</SelectItem>
-                      <SelectItem value="winter">Winter</SelectItem>
-                      <SelectItem value="house">House</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="name">Item Name</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., White Shirt"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="material">Material</Label>
+                  <Label htmlFor="name">Item Name</Label>
                   <Input
-                    id="material"
-                    value={formData.material}
-                    onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                    placeholder="e.g., Cotton blend"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="location">Storage Location</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="e.g., Shelf A-1"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="stock">Stock Quantity</Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
-                    min="0"
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g., White Shirt"
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">Give the item a clear, descriptive name.</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="material">Material</Label>
+                    <Input
+                      id="material"
+                      value={formData.material}
+                      onChange={(e) => setFormData({ ...formData, material: e.target.value })}
+                      placeholder="e.g., Cotton blend"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Optional: specify the material.</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="location">Storage Location</Label>
+                    <Input
+                      id="location"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      placeholder="e.g., Shelf A-1"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Optional: where is this item stored?</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="stock">Stock Quantity</Label>
+                    <Input
+                      id="stock"
+                      type="number"
+                      value={formData.stock === '' ? '' : formData.stock}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData({ ...formData, stock: val === '' ? '' : parseInt(val) });
+                      }}
+                      min="0"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">How many are in stock?</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="price">Base Price ($)</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      value={formData.price === '' ? '' : formData.price}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData({ ...formData, price: val === '' ? '' : parseFloat(val) });
+                      }}
+                      min="0"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Set the base price for this item.</p>
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="price">Base Price ($)</Label>
+                  <Label htmlFor="image">Image URL</Label>
                   <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                    min="0"
-                    required
+                    id="image"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://example.com/item-image.jpg"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">Paste a direct image URL for a nice preview.</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    {formData.image ? (
+                      <img src={formData.image} alt="Preview" className="w-20 h-14 object-cover rounded border" />
+                    ) : (
+                      <div className="w-20 h-14 flex items-center justify-center bg-muted rounded border">
+                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <span className="text-xs text-muted-foreground">Preview</span>
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://example.com/item-image.jpg"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <Label>Size Variants & Pricing</Label>
-                  <Button type="button" variant="outline" size="sm" onClick={addSizePrice}>
+                <hr className="my-4 border-muted" />
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Ruler className="h-5 w-5 text-green-500" />
+                    <Label className="text-base font-semibold">Size Variants & Pricing</Label>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={addSizePrice} className="mb-2">
                     <Plus className="h-4 w-4 mr-1" />
                     Add Size
                   </Button>
+                  <div className="space-y-2">
+                    {sizePrices.length === 0 && (
+                      <div className="text-xs text-muted-foreground italic flex items-center gap-2 pl-1 pb-2">
+                        <Ruler className="h-4 w-4" /> No sizes added yet.
+                      </div>
+                    )}
+                    {sizePrices.map((sp, index) => (
+                      <div key={index} className="flex gap-2 items-center">
+                        <Input
+                          placeholder="Size (e.g., S, M, L)"
+                          value={sp.size}
+                          onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
+                          className="flex-1"
+                        />
+                        <Input
+                          placeholder="Price"
+                          type="number"
+                          step="0.01"
+                          value={sp.price === '' ? '' : sp.price}
+                          onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
+                          className="w-24"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeSizePrice(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  {sizePrices.map((sp, index) => (
-                    <div key={index} className="flex gap-2 items-center">
-                      <Input
-                        placeholder="Size (e.g., S, M, L)"
-                        value={sp.size}
-                        onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
-                        className="flex-1"
-                      />
-                      <Input
-                        placeholder="Price"
-                        type="number"
-                        step="0.01"
-                        value={sp.price}
-                        onChange={(e) => updateSizePrice(index, 'price', parseFloat(e.target.value) || 0)}
-                        className="w-24"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeSizePrice(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
+                <hr className="my-4 border-muted" />
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Create Item</Button>
                 </div>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">Create Item</Button>
-              </div>
-            </form>
+              </form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -556,8 +587,11 @@ const ItemManagement = () => {
                 <Input
                   id="edit-stock"
                   type="number"
-                  value={formData.stock}
-                  onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+                  value={formData.stock === '' ? '' : formData.stock}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({ ...formData, stock: val === '' ? '' : parseInt(val) });
+                  }}
                   min="0"
                   required
                 />
@@ -568,8 +602,11 @@ const ItemManagement = () => {
                   id="edit-price"
                   type="number"
                   step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                  value={formData.price === '' ? '' : formData.price}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({ ...formData, price: val === '' ? '' : parseFloat(val) });
+                  }}
                   min="0"
                   required
                 />
@@ -606,8 +643,8 @@ const ItemManagement = () => {
                       placeholder="Price"
                       type="number"
                       step="0.01"
-                      value={sp.price}
-                      onChange={(e) => updateSizePrice(index, 'price', parseFloat(e.target.value) || 0)}
+                      value={sp.price === '' ? '' : sp.price}
+                      onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
                       className="w-24"
                     />
                     <Button

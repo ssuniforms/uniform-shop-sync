@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useData } from '@/contexts/DataContext';
+import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,9 +12,27 @@ import { Sale } from '@/types';
 
 const SalesManagement = () => {
   const { sales, loading } = useData()!;
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPeriod, setFilterPeriod] = useState('all');
   const [filterEmployee, setFilterEmployee] = useState('all');
+
+  // Read URL parameters on component mount
+  useEffect(() => {
+    const filterFromUrl = searchParams.get('filter');
+    if (filterFromUrl && ['today', 'month', 'year'].includes(filterFromUrl)) {
+      setFilterPeriod(filterFromUrl);
+    }
+  }, [searchParams]);
+
+  // Update URL when filter changes
+  useEffect(() => {
+    if (filterPeriod !== 'all') {
+      setSearchParams({ filter: filterPeriod });
+    } else {
+      setSearchParams({});
+    }
+  }, [filterPeriod, setSearchParams]);
 
   const getFilteredSales = () => {
     let filtered = [...sales];
@@ -71,6 +90,16 @@ const SalesManagement = () => {
     return salesList.reduce((total, sale) => total + sale.total_amount, 0);
   };
 
+  const getPeriodDisplayName = (period: string) => {
+    switch (period) {
+      case 'today': return 'Today';
+      case 'week': return 'Last Week';
+      case 'month': return 'Last Month';
+      case 'year': return 'Last Year';
+      default: return 'All Time';
+    }
+  };
+
   const filteredSales = getFilteredSales();
   const totalRevenue = getTotalRevenue(filteredSales);
   const averageOrderValue = filteredSales.length > 0 ? totalRevenue / filteredSales.length : 0;
@@ -88,7 +117,14 @@ const SalesManagement = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Sales Management</h1>
-          <p className="text-muted-foreground">View and analyze sales transactions</p>
+          <p className="text-muted-foreground">
+            View and analyze sales transactions
+            {filterPeriod !== 'all' && (
+              <span className="ml-2 text-primary font-medium">
+                • Filtered by {getPeriodDisplayName(filterPeriod)}
+              </span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -136,7 +172,7 @@ const SalesManagement = () => {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold capitalize">{filterPeriod}</div>
+            <div className="text-2xl font-bold capitalize">{getPeriodDisplayName(filterPeriod)}</div>
             <p className="text-xs text-muted-foreground">
               Time range
             </p>
