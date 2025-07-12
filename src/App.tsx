@@ -19,6 +19,10 @@ import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import AdminSetup from "@/pages/AdminSetup";
 import Dashboard from "@/pages/Dashboard";
+import CatalogueManagement from "@/pages/admin/CatalogueManagement";
+import ItemManagement from "@/pages/admin/ItemManagement";
+import EmployeeManagement from "@/pages/admin/EmployeeManagement";
+import SalesManagement from "@/pages/admin/SalesManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,9 +52,41 @@ const App = () => (
                       </ProtectedRoute>
                     } 
                   />
+                  <Route 
+                    path="/admin/catalogues" 
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <CatalogueManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/items" 
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <ItemManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/employees" 
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <EmployeeManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/sales" 
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <SalesManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
                   
-                  {/* Placeholder routes for future implementation */}
-                  <Route path="/catalogues" element={<div className="p-8 text-center">Catalogues page coming soon!</div>} />
+                  {/* Public routes for future implementation */}
+                  <Route path="/catalogues" element={<div className="p-8 text-center">Public catalogues page coming soon!</div>} />
                   <Route path="/cart" element={<div className="p-8 text-center">Cart page coming soon!</div>} />
                   
                   {/* Catch-all route */}
