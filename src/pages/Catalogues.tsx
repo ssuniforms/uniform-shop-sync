@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { useData } from '@/contexts/DataContext';
+import { useCart } from '@/contexts/CartContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image } from 'lucide-react';
+import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image, Plus, Minus } from 'lucide-react';
 import { formatPrice } from '@/utils/formatters';
 import { SectionType, Catalogue } from '@/types';
 
 const Catalogues = () => {
   const { catalogues, loading } = useData();
+  const { addItem, isInCart, getItemQuantity } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCatalogue, setSelectedCatalogue] = useState<Catalogue | null>(null);
   const [selectedSection, setSelectedSection] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
 
   // Get items from selected catalogue
   const catalogueItems = selectedCatalogue 
@@ -43,12 +47,71 @@ const Catalogues = () => {
     setSelectedCatalogue(catalogue);
     setSearchTerm('');
     setSelectedSection('all');
+    setSelectedSizes({});
+    setQuantities({});
   };
 
   const handleBackToCatalogues = () => {
     setSelectedCatalogue(null);
     setSearchTerm('');
     setSelectedSection('all');
+    setSelectedSizes({});
+    setQuantities({});
+  };
+
+  const handleSizeSelect = (itemId: string, size: string) => {
+    setSelectedSizes(prev => ({
+      ...prev,
+      [itemId]: size
+    }));
+    
+    // Initialize quantity to 1 when size is selected
+    if (!quantities[itemId]) {
+      setQuantities(prev => ({
+        ...prev,
+        [itemId]: 1
+      }));
+    }
+  };
+
+  const handleQuantityChange = (itemId: string, change: number) => {
+    const currentQty = quantities[itemId] || 1;
+    const newQty = Math.max(1, currentQty + change);
+    setQuantities(prev => ({
+      ...prev,
+      [itemId]: newQty
+    }));
+  };
+
+  const handleAddToCart = (item: any) => {
+    const itemId = item.id;
+    const selectedSize = selectedSizes[itemId];
+    const quantity = quantities[itemId] || 1;
+
+    // If item has sizes, require size selection
+    if (item.sizes && item.sizes.length > 0) {
+      if (!selectedSize) {
+        // Show error or prompt to select size
+        return;
+      }
+      
+      // Find the selected size object
+      const sizeObj = item.sizes.find((s: any) => s.size === selectedSize);
+      if (sizeObj) {
+        addItem(item, selectedSize, sizeObj.price, quantity);
+      }
+    } else {
+      // Item has single price
+      addItem(item, 'Standard', item.price, quantity);
+    }
+  };
+
+  const getItemPrice = (item: any, selectedSize?: string) => {
+    if (item.sizes && item.sizes.length > 0 && selectedSize) {
+      const sizeObj = item.sizes.find((s: any) => s.size === selectedSize);
+      return sizeObj ? sizeObj.price : item.price;
+    }
+    return item.price;
   };
 
   if (loading) {
@@ -256,81 +319,140 @@ const Catalogues = () => {
                   ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                   : "space-y-4"
               }>
-                {filteredItems.map((item) => (
-                  <Card key={item.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 ${
-                    viewMode === 'list' ? 'flex flex-row' : ''
-                  }`}>
-                    <div className={`bg-muted relative ${
-                      viewMode === 'list' ? 'w-48 h-32' : 'aspect-square'
+                {filteredItems.map((item) => {
+                  const itemId = item.id;
+                  const selectedSize = selectedSizes[itemId];
+                  const quantity = quantities[itemId] || 1;
+                  const currentPrice = getItemPrice(item, selectedSize);
+                  const hasSizes = item.sizes && item.sizes.length > 0;
+                  
+                  return (
+                    <Card key={item.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 ${
+                      viewMode === 'list' ? 'flex flex-row' : ''
                     }`}>
-                      {item.image ? (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            // Fallback to placeholder if image fails to load
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                      ) : null}
-                      <div className={`flex items-center justify-center h-full ${item.image ? 'hidden' : ''}`}>
-                        <Package className="h-12 w-12 text-muted-foreground" />
-                      </div>
-                      {item.stock < 6 && (
-                        <Badge variant="destructive" className="absolute top-2 right-2">
-                          Low Stock
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex-1">
-                      <CardHeader className={viewMode === 'list' ? 'pb-2' : ''}>
-                        <CardTitle className="text-lg">{item.name}</CardTitle>
-                        <CardDescription>
-                          {item.sectionName}
-                        </CardDescription>
-                      </CardHeader>
-                      
-                      <CardContent className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-2xl font-bold text-primary">
-                            {formatPrice(item.price)}
-                          </span>
-                          <Badge variant={item.stock > 10 ? 'default' : 'secondary'}>
-                            {item.stock} in stock
-                          </Badge>
+                      <div className={`bg-muted relative ${
+                        viewMode === 'list' ? 'w-48 h-32' : 'aspect-square'
+                      }`}>
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to placeholder if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              target.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <div className={`flex items-center justify-center h-full ${item.image ? 'hidden' : ''}`}>
+                          <Package className="h-12 w-12 text-muted-foreground" />
                         </div>
-                        
-                        {item.material && (
-                          <p className="text-sm text-muted-foreground">
-                            Material: {item.material}
-                          </p>
+                        {item.stock < 6 && (
+                          <Badge variant="destructive" className="absolute top-2 right-2">
+                            Low Stock
+                          </Badge>
                         )}
+                      </div>
+                      
+                      <div className="flex-1">
+                        <CardHeader className={viewMode === 'list' ? 'pb-2' : ''}>
+                          <CardTitle className="text-lg">{item.name}</CardTitle>
+                          <CardDescription>
+                            {item.sectionName}
+                          </CardDescription>
+                        </CardHeader>
                         
-                        {item.sizes && item.sizes.length > 0 && (
-                          <div className="space-y-2">
-                            <p className="text-sm font-medium">Available Sizes:</p>
-                            <div className="flex flex-wrap gap-1">
-                              {item.sizes.map((size, index) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {size.size}: {formatPrice(size.price)}
-                                </Badge>
-                              ))}
+                        <CardContent className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-2xl font-bold text-primary">
+                              {formatPrice(currentPrice)}
+                            </span>
+                            <Badge variant={item.stock > 10 ? 'default' : 'secondary'}>
+                              {item.stock} in stock
+                            </Badge>
+                          </div>
+                          
+                          {item.material && (
+                            <p className="text-sm text-muted-foreground">
+                              Material: {item.material}
+                            </p>
+                          )}
+                          
+                          {hasSizes && (
+                            <div className="space-y-2">
+                              <p className="text-sm font-medium">Select Size:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {item.sizes.map((size: any, index: number) => (
+                                  <Button
+                                    key={index}
+                                    variant={selectedSize === size.size ? 'default' : 'outline'}
+                                    size="sm"
+                                    className="text-xs"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleSizeSelect(itemId, size.size);
+                                    }}
+                                  >
+                                    {size.size}: {formatPrice(size.price)}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Quantity Selector */}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">Quantity:</span>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleQuantityChange(itemId, -1);
+                                }}
+                                disabled={quantity <= 1}
+                              >
+                                <Minus className="h-3 w-3" />
+                              </Button>
+                              <span className="w-8 text-center text-sm">{quantity}</span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleQuantityChange(itemId, 1);
+                                }}
+                                disabled={quantity >= item.stock}
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
                             </div>
                           </div>
-                        )}
-                        
-                        <Button className="w-full" disabled={item.stock === 0}>
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          {item.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                        </Button>
-                      </CardContent>
-                    </div>
-                  </Card>
-                ))}
+                          
+                          <Button 
+                            className="w-full" 
+                            disabled={item.stock === 0 || (hasSizes && !selectedSize)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(item);
+                            }}
+                          >
+                            <ShoppingCart className="h-4 w-4 mr-2" />
+                            {item.stock === 0 
+                              ? 'Out of Stock' 
+                              : hasSizes && !selectedSize 
+                                ? 'Select Size' 
+                                : 'Add to Cart'
+                            }
+                          </Button>
+                        </CardContent>
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>

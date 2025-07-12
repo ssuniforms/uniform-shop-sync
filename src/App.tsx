@@ -25,6 +25,7 @@ import ItemManagement from "@/pages/admin/ItemManagement";
 import EmployeeManagement from "@/pages/admin/EmployeeManagement";
 import SalesManagement from "@/pages/admin/SalesManagement";
 import Catalogues from "@/pages/Catalogues";
+import Cart from "@/pages/Cart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -90,7 +91,7 @@ const App = () => (
                     
                     {/* Public routes for future implementation */}
                     <Route path="/catalogues" element={<Catalogues />} />
-                    <Route path="/cart" element={<div className="p-8 text-center">Cart page coming soon!</div>} />
+                    <Route path="/cart" element={<Cart />} />
                     
                     {/* Catch-all route */}
                     <Route path="*" element={<NotFound />} />
