@@ -64,7 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('👤 AuthContext: Fetching profile for user:', userId);
       console.log('🔗 AuthContext: Supabase client initialized:', !!supabase);
-      console.log('🏢 AuthContext: Supabase URL:', supabase.supabaseUrl);
       
       const { data, error } = await supabase
         .from('profiles')

@@ -290,14 +290,25 @@ const Login = () => {
                 </div>
               </div>
               
-              <div className="text-center text-sm">
-                <span className="text-white/70">Don't have an account? </span>
-                <Link 
-                  to="/signup" 
-                  className="text-cyan-400 hover:text-cyan-300 font-medium hover:underline transition-colors"
-                >
-                  Create Account
-                </Link>
+              <div className="text-center text-sm space-y-2">
+                <div>
+                  <span className="text-white/70">Don't have an account? </span>
+                  <Link 
+                    to="/signup" 
+                    className="text-cyan-400 hover:text-cyan-300 font-medium hover:underline transition-colors"
+                  >
+                    Create Account
+                  </Link>
+                </div>
+                <div>
+                  <span className="text-white/70">Need to set up admin access? </span>
+                  <Link 
+                    to="/admin-setup" 
+                    className="text-pink-400 hover:text-pink-300 font-medium hover:underline transition-colors"
+                  >
+                    Admin Setup
+                  </Link>
+                </div>
               </div>
 
               {/* Credentials info */}
