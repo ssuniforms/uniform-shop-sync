@@ -26,6 +26,7 @@ import EmployeeManagement from "@/pages/admin/EmployeeManagement";
 import SalesManagement from "@/pages/admin/SalesManagement";
 import Catalogues from "@/pages/Catalogues";
 import Cart from "@/pages/Cart";
+import LowStockManagement from "@/pages/admin/LowStockManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +86,14 @@ const App = () => (
                       element={
                         <ProtectedRoute requiredRole="admin">
                           <SalesManagement />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/admin/low-stock" 
+                      element={
+                        <ProtectedRoute requiredRole="admin">
+                          <LowStockManagement />
                         </ProtectedRoute>
                       } 
                     />

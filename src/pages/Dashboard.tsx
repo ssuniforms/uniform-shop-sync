@@ -157,19 +157,21 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-red-700">Low Stock Items</p>
-                  <p className="text-3xl font-bold text-red-800 mt-2">
-                    {dashboardStats.lowStockCount}
-                  </p>
+          <Link to="/admin/low-stock">
+            <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-red-50 to-red-100 border-red-200 cursor-pointer group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-red-700">Low Stock Items</p>
+                    <p className="text-3xl font-bold text-red-800 mt-2">
+                      {dashboardStats.lowStockCount}
+                    </p>
+                  </div>
+                  <AlertTriangle className="w-8 h-8 text-red-600 group-hover:scale-110 transition-transform" />
                 </div>
-                <AlertTriangle className="w-8 h-8 text-red-600" />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
           <Card className="shadow-business hover:shadow-business-hover transition-all duration-300 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
             <CardContent className="p-6">

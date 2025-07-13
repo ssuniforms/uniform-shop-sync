@@ -38,7 +38,17 @@ const Home: React.FC = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-violet-900/20 via-purple-900/10 to-indigo-900/20 py-20 px-6 overflow-hidden">
-        {/* Animated gradient background */}
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src="/src/assets/hero-uniform-enhanced.jpg" 
+            alt="Professional school uniform display" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/40 via-purple-900/30 to-indigo-900/40"></div>
+        </div>
+        
+        {/* Animated gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-cyan-500/10 animate-gradient-x"></div>
         
         {/* Floating gradient orbs */}
@@ -47,7 +57,7 @@ const Home: React.FC = () => {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
         
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNlMGU3ZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI0Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNlMGU3ZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSI0Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
         
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border">
@@ -101,10 +111,10 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold gradient-text-blue mb-4">
-              Why Choose SS Uniforms?
+              Why Choose {shopInfo?.name || 'SS Uniforms'}?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We provide complete uniform solutions with unmatched quality and service standards
+              {shopInfo?.description || 'We provide complete uniform solutions with unmatched quality and service standards'}
             </p>
           </div>
           
@@ -126,9 +136,9 @@ const Home: React.FC = () => {
                 <div className="w-16 h-16 bg-gradient-green rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <Globe className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-green-800 mb-3">{totalSchools > 0 ? `${totalSchools}+` : '50+'} Schools</h3>
+                <h3 className="text-xl font-bold text-green-800 mb-3">{totalItems > 0 ? `${totalItems}+` : '500+'} Products</h3>
                 <p className="text-green-600">
-                  Trusted partner for schools across Delhi NCR region
+                  Wide range of uniform items and accessories available
                 </p>
               </CardContent>
             </Card>

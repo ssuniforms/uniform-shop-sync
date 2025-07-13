@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image, Plus, Minus, Sparkles } from 'lucide-react';
+import { Search, Package, Filter, Grid, List, ShoppingCart, ArrowLeft, Image, Plus, Minus, Sparkles, MapPin, Eye } from 'lucide-react';
 import { formatPrice } from '@/utils/formatters';
 import { SectionType, Catalogue } from '@/types';
 
@@ -301,8 +301,14 @@ const Catalogues = () => {
                       <div className="flex-1 flex flex-col justify-between">
                         <CardHeader className={viewMode === 'list' ? 'pb-2' : ''}>
                           <CardTitle className="text-lg font-bold text-blue-900">{item.name}</CardTitle>
-                          <CardDescription className="text-base text-muted-foreground">
-                            {item.material && <span>Material: {item.material}</span>}
+                          <CardDescription className="text-base text-muted-foreground space-y-1">
+                            {item.material && <div>Material: {item.material}</div>}
+                            {item.location && (
+                              <div className="flex items-center gap-1 text-sm">
+                                <MapPin className="h-3 w-3" />
+                                <span>Location: {item.location}</span>
+                              </div>
+                            )}
                           </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
@@ -314,27 +320,29 @@ const Catalogues = () => {
                               {item.stock} in stock
                             </Badge>
                           </div>
-                          {hasSizes && (
+                           {hasSizes && (
                             <div className="space-y-2">
-                              <p className="text-sm font-medium">Select Size:</p>
-                              <div className="flex flex-wrap gap-1">
+                              <p className="text-sm font-medium">Sizes & Prices:</p>
+                              <div className="grid grid-cols-2 gap-2">
                                 {item.sizes.map((size: any, index: number) => (
                                   <Button
                                     key={index}
                                     variant={selectedSize === size.size ? 'default' : 'outline'}
                                     size="sm"
-                                    className="text-xs"
+                                    className="text-xs h-auto p-2 flex flex-col items-center gap-1"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       handleSizeSelect(itemId, size.size);
                                     }}
                                   >
-                                    {size.size}: {formatPrice(size.price)}
+                                    <span className="font-semibold">{size.size}</span>
+                                    <span className="text-xs">{formatPrice(size.price)}</span>
+                                    <span className="text-xs opacity-75">{size.stock} left</span>
                                   </Button>
                                 ))}
                               </div>
                             </div>
-                          )}
+                           )}
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">Quantity:</span>
                             <div className="flex items-center gap-2">
