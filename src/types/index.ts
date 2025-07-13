@@ -76,6 +76,7 @@ export interface SizePrice {
   item_id: string;
   size: string;
   price: number;
+  stock: number;
   created_at: string;
 }
 
@@ -144,6 +145,7 @@ export interface DbItemSize {
   item_id: string;
   size: string;
   price: number;
+  stock: number;
   created_at: string;
 }
 
@@ -198,6 +200,7 @@ export interface ItemInput {
 export interface SizePriceInput {
   size: string;
   price: number | '';
+  stock: number | '';
 }
 
 export interface SaleInput {

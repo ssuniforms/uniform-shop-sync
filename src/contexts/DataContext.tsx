@@ -329,11 +329,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .insert({
           catalogue_id: item.catalogue_id,
           name: item.name,
-          material: item.material,
-          location: item.location,
-          stock: item.stock,
-          price: item.price,
-          image: item.image,
+          material: item.material || '',
+          location: item.location || '',
+          stock: typeof item.stock === 'number' ? item.stock : 0,
+          price: typeof item.price === 'number' ? item.price : 0,
+          image: item.image || '',
           section_type: item.section_type,
         })
         .select()
@@ -345,11 +345,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Add sizes
       if (item.sizes.length > 0) {
-        const sizesData = item.sizes.map(size => ({
-          item_id: itemData.id,
-          size: size.size,
-          price: size.price,
-        }));
+        const sizesData = item.sizes
+          .filter(size => size.size && typeof size.price === 'number')
+          .map(size => ({
+            item_id: itemData.id,
+            size: size.size,
+            price: size.price as number,
+          }));
 
         const { error: sizesError } = await supabase
           .from('item_sizes')
@@ -385,11 +387,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .from('items')
         .update({
           name: item.name,
-          material: item.material,
-          location: item.location,
-          stock: item.stock,
-          price: item.price,
-          image: item.image,
+          material: item.material || '',
+          location: item.location || '',
+          stock: typeof item.stock === 'number' ? item.stock : 0,
+          price: typeof item.price === 'number' ? item.price : 0,
+          image: item.image || '',
           section_type: item.section_type,
         })
         .eq('id', id);
@@ -406,11 +408,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Insert new sizes
         if (item.sizes.length > 0) {
-          const sizesData = item.sizes.map(size => ({
-            item_id: id,
-            size: size.size,
-            price: size.price,
-          }));
+          const sizesData = item.sizes
+            .filter(size => size.size && typeof size.price === 'number')
+            .map(size => ({
+              item_id: id,
+              size: size.size,
+              price: size.price as number,
+            }));
 
           await supabase
             .from('item_sizes')

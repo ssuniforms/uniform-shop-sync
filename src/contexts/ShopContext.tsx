@@ -91,7 +91,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Transform database data to include default values
       const transformedData: ShopInfo = {
         ...data,
-        images: Array.isArray(data.images) ? data.images : [],
+        images: Array.isArray(data.images) ? data.images.map(img => typeof img === 'string' ? img : JSON.stringify(img)) : (data.images ? [data.images as string] : []),
         justDialUrl: 'https://www.justdial.com/Delhi/SS-Uniforms',
         businessHours: {
           weekdays: '9:00 AM - 7:00 PM',
