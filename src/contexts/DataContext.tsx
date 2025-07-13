@@ -169,7 +169,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           const transformedItem: UniformItem = {
             ...item,
-            sizes: itemSizes,
+            sizes: itemSizes.map((size: DbItemSize) => ({
+              ...size,
+              stock: size.stock || 0,
+            })),
           };
 
           const section = sections.find(s => s.name === item.section_type);
@@ -351,6 +354,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             item_id: itemData.id,
             size: size.size,
             price: size.price as number,
+            stock: typeof size.stock === 'number' ? size.stock : 0,
           }));
 
         const { error: sizesError } = await supabase
@@ -414,6 +418,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
               item_id: id,
               size: size.size,
               price: size.price as number,
+              stock: typeof size.stock === 'number' ? size.stock : 0,
             }));
 
           await supabase

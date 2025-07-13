@@ -166,10 +166,10 @@ const ItemManagement = () => {
   };
 
   const addSizePrice = () => {
-    setSizePrices([...sizePrices, { size: '', price: 0 }]);
+    setSizePrices([...sizePrices, { size: '', price: '', stock: '' }]);
   };
 
-  const updateSizePrice = (index: number, field: 'size' | 'price', value: string | number) => {
+  const updateSizePrice = (index: number, field: 'size' | 'price' | 'stock', value: string | number) => {
     const updated = sizePrices.map((sp, i) => 
       i === index ? { ...sp, [field]: value } : sp
     );
@@ -356,32 +356,40 @@ const ItemManagement = () => {
                         <Ruler className="h-4 w-4" /> No sizes added yet.
                       </div>
                     )}
-                    {sizePrices.map((sp, index) => (
-                      <div key={index} className="flex gap-2 items-center">
-                        <Input
-                          placeholder="Size (e.g., S, M, L)"
-                          value={sp.size}
-                          onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
-                          className="flex-1"
-                        />
-                        <Input
-                          placeholder="Price"
-                          type="number"
-                          step="0.01"
-                          value={sp.price === '' ? '' : sp.price}
-                          onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                          className="w-24"
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeSizePrice(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                     {sizePrices.map((sp, index) => (
+                       <div key={index} className="flex gap-2 items-center">
+                         <Input
+                           placeholder="Size (e.g., S, M, L)"
+                           value={sp.size}
+                           onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
+                           className="flex-1"
+                         />
+                         <Input
+                           placeholder="Price"
+                           type="number"
+                           step="0.01"
+                           value={sp.price === '' ? '' : sp.price}
+                           onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
+                           className="w-24"
+                         />
+                         <Input
+                           placeholder="Stock"
+                           type="number"
+                           value={sp.stock === '' ? '' : sp.stock}
+                           onChange={(e) => updateSizePrice(index, 'stock', e.target.value === '' ? '' : parseInt(e.target.value))}
+                           className="w-20"
+                           min="0"
+                         />
+                         <Button
+                           type="button"
+                           variant="outline"
+                           size="sm"
+                           onClick={() => removeSizePrice(index)}
+                         >
+                           <Trash2 className="h-4 w-4" />
+                         </Button>
+                       </div>
+                     ))}
                   </div>
                 </div>
                 <hr className="my-4 border-muted" />
@@ -631,32 +639,40 @@ const ItemManagement = () => {
                 </Button>
               </div>
               <div className="space-y-2">
-                {sizePrices.map((sp, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <Input
-                      placeholder="Size (e.g., S, M, L)"
-                      value={sp.size}
-                      onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
-                      className="flex-1"
-                    />
-                    <Input
-                      placeholder="Price"
-                      type="number"
-                      step="0.01"
-                      value={sp.price === '' ? '' : sp.price}
-                      onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                      className="w-24"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeSizePrice(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                 {sizePrices.map((sp, index) => (
+                   <div key={index} className="flex gap-2 items-center">
+                     <Input
+                       placeholder="Size (e.g., S, M, L)"
+                       value={sp.size}
+                       onChange={(e) => updateSizePrice(index, 'size', e.target.value)}
+                       className="flex-1"
+                     />
+                     <Input
+                       placeholder="Price"
+                       type="number"
+                       step="0.01"
+                       value={sp.price === '' ? '' : sp.price}
+                       onChange={(e) => updateSizePrice(index, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
+                       className="w-24"
+                     />
+                     <Input
+                       placeholder="Stock"
+                       type="number"
+                       value={sp.stock === '' ? '' : sp.stock}
+                       onChange={(e) => updateSizePrice(index, 'stock', e.target.value === '' ? '' : parseInt(e.target.value))}
+                       className="w-20"
+                       min="0"
+                     />
+                     <Button
+                       type="button"
+                       variant="outline"
+                       size="sm"
+                       onClick={() => removeSizePrice(index)}
+                     >
+                       <Trash2 className="h-4 w-4" />
+                     </Button>
+                   </div>
+                 ))}
               </div>
             </div>
 
